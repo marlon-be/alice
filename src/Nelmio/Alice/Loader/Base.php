@@ -313,18 +313,22 @@ class Base implements LoaderInterface
      */
     private function checkTypeHints($obj, $method, $value, $pNum = 0)
     {
-        if (!is_numeric($value) && !is_string($value)) {
-            return $value;
-        }
-
         $reflection = new \ReflectionMethod($obj, $method);
         $params = $reflection->getParameters();
 
-        if (!$params[$pNum]->getClass()) {
+        if (!array_key_exists($pNum, $params) || !($params[$pNum]->getClass())) {
             return $value;
         }
 
         $hintedClass = $params[$pNum]->getClass()->getName();
+
+        if (!is_numeric($value) && !is_string($value)) {
+            // also support VO
+            if($hintedClass && is_array($value)) {
+                $reflClass = new \ReflectionClass($hintedClass);
+                return $reflClass->newInstanceArgs($value);
+            }
+        }
 
         if ($hintedClass === 'DateTime') {
             try {
@@ -339,6 +343,12 @@ class Base implements LoaderInterface
         }
 
         if (is_numeric($value)) {
+
+            // support VO when single numeric value
+            if($hintedClass) {
+                return new $hintedClass($value);
+            }
+
             if (!$this->manager) {
                 throw new \LogicException('To reference objects by id you must first set a Nelmio\Alice\ORMInterface object on this instance');
             }
