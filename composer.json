@@ -1,5 +1,5 @@
 {
-    "name": "nelmio/alice",
+    "name": "marlon-be/alice",
     "description": "Expressive fixtures generator",
     "keywords": ["fixture", "data", "test", "orm"],
     "type": "library",
