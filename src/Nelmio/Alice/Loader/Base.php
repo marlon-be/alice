@@ -171,6 +171,11 @@ class Base implements LoaderInterface
         return $this->references;
     }
 
+    public function addReference($name, $object)
+    {
+        $this->references[$name] = $object;
+    }
+
     public function fake($formatter, $locale = null, $arg = null, $arg2 = null, $arg3 = null)
     {
         $args = func_get_args();
