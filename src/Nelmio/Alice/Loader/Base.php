@@ -336,14 +336,16 @@ class Base implements LoaderInterface
         }
 
         if ($hintedClass === 'DateTime') {
-            try {
-                if (preg_match('{^[0-9]+$}', $value)) {
-                    $value = '@'.$value;
-                }
+            if ( !($value instanceof \DateTime) ) {
+                try {
+                    if (preg_match('{^[0-9]+$}', $value)) {
+                        $value = '@'.$value;
+                    }
 
-                return new \DateTime($value);
-            } catch (\Exception $e) {
-                throw new \UnexpectedValueException('Could not convert '.$value.' to DateTime for '.$reflection->getDeclaringClass()->getName().'::'.$method, 0, $e);
+                    return new \DateTime($value);
+                } catch (\Exception $e) {
+                    throw new \UnexpectedValueException('Could not convert '.$value.' to DateTime for '.$reflection->getDeclaringClass()->getName().'::'.$method, 0, $e);
+                }
             }
         }
 
